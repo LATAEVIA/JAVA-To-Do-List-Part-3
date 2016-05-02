@@ -35,5 +35,12 @@ public class TaskTest {
     assertEquals("Mow the lawn", myTask.getDescription());
   }
 
+  @Test
+  public void all_emptyAtFirst() {
+    assertEquals(Task.all().size(), 0);
+  }
+
+
+
 
 }
