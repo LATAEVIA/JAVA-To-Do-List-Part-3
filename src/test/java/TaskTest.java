@@ -46,9 +46,12 @@ public class TaskTest {
     Task secondTask = new Task("Mow the lawn");
     assertTrue(firstTask.equals(secondTask));
   }
-  
 
-
-
-
+  @Test
+  public void save_assignsIdToObject() {
+    Task myTask = new Task("Mow the lawn");
+    myTask.save();
+    Task savedTask = Task.all().get(0);
+    assertEquals(myTask.getId(), savedTask.getId());
+  }
 }
