@@ -35,6 +35,7 @@ public class App {
       String name = request.queryParams("name");
       Category newCategory = new Category(name);
       newCategory.save(); // *** ADDED FOR DB VERSION ***
+      model.put("category", newCategory);
       model.put("template", "templates/category-success.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
