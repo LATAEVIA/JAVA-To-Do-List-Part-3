@@ -1,63 +1,47 @@
-import java.util.List; //to work with list class
-import org.sql2o.*;//to work with database
-
+import java.util.List;
+import org.sql2o.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Task {
   private int id;
   private String description;
-  private int categoryId;
 
-
-  public Task(String description, int categoryId) {
+  public Task(String description) {
     this.description = description;
-    this.categoryId = categoryId;
   }
-//Getter methods
+
   public String getDescription() {
     return description;
   }
 
   public int getId() {
     return id;
-    //how are we getting id?
-  }
-
-  public int getCategoryId() {
-    return categoryId;
-    //how does the server know to populate the Task table-categoryId column with the contents of Categories table- id column? is it
   }
 
   public static List<Task> all() {
-    //'list', as opposed to 'arraylist' is generic so no need for property or constructor?
-    String sql = "SELECT id, description, categoryId FROM tasks";
-    //all information from a row, which for now is id, description from the tasks table.
+    String sql = "SELECT id, description FROM tasks";
     try(Connection con = DB.sql2o.open()) {
       return con.createQuery(sql).executeAndFetch(Task.class);
-      //turn each row of information into a Java object based on the argument. In this case we pass Task.class, which creates the Task objects and stores them into a List<Task> object, which we then return
-      //What does .class do exactly??
     }
   }
 
   @Override
-  public boolean equals(Object otherTask) {
+  public boolean equals(Object otherTask){
     if (!(otherTask instanceof Task)) {
       return false;
     } else {
       Task newTask = (Task) otherTask;
       return this.getDescription().equals(newTask.getDescription()) &&
-        this.getId() == newTask.getId();
-        //not sure how these last three lines affect firstTask vs secondTask equality
+             this.getId() == newTask.getId();
     }
   }
 
   public void save() {
-  try(Connection con = DB.sql2o.open()) {
-    String sql = "INSERT INTO tasks(description, categoryId) VALUES (:description, :categoryId)";
-    this.id = (int) con.createQuery(sql, true)
-      .addParameter("description", this.description)
-      .addParameter("categoryId", this.categoryId)
-      //where did we "add the int categoryId parameter to our save() method" (https://www.learnhowtoprogram.com/java/java-database-basics/to-do-list-with-db-backed-one-to-many)
-        //We replace the :description placeholder with this.description using .addParameter("description", this.description)
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "INSERT INTO tasks(description) VALUES (:description)";
+      this.id = (int) con.createQuery(sql, true)
+        .addParameter("description", this.description)
         .executeUpdate()
         .getKey();
     }
@@ -69,27 +53,61 @@ public class Task {
       Task task = con.createQuery(sql)
         .addParameter("id", id)
         .executeAndFetchFirst(Task.class);
-        //return the first item in the collection returned by our database, cast as a Task object
       return task;
     }
   }
 
-  public void update(String description) {
+  public void update(String newDescription) {
     try(Connection con = DB.sql2o.open()) {
       String sql = "UPDATE tasks SET description = :description WHERE id = :id";
       con.createQuery(sql)
-        .addParameter("description", description)
-        .addParameter("id", id)
+        .addParameter("description", newDescription)
+        .addParameter("id", this.id)
         .executeUpdate();
     }
   }
 
   public void delete() {
+  try(Connection con = DB.sql2o.open()) {
+    String deleteQuery = "DELETE FROM tasks WHERE id = :id;";
+      con.createQuery(deleteQuery)
+        .addParameter("id", this.getId())
+        .executeUpdate();
+
+    String joinDeleteQuery = "DELETE FROM categories_tasks WHERE task_id = :taskId";
+      con.createQuery(joinDeleteQuery)
+        .addParameter("taskId", this.getId())
+        .executeUpdate();
+  }
+}
+
+  public void addCategory(Category category) {
     try(Connection con = DB.sql2o.open()) {
-    String sql = "DELETE FROM tasks WHERE id = :id;";
-    con.createQuery(sql)
-      .addParameter("id", id)
-      .executeUpdate();
+      String sql = "INSERT INTO categories_tasks (category_id, task_id) VALUES (:category_id, :task_id)";
+      con.createQuery(sql)
+        .addParameter("category_id", category.getId())
+        .addParameter("task_id", this.getId())
+        .executeUpdate();
+    }
+}
+
+  public List<Category> getCategories() {
+    try(Connection con = DB.sql2o.open()){
+      String joinQuery = "SELECT category_id FROM categories_tasks WHERE task_id = :task_id";
+      List<Integer> categoryIds = con.createQuery(joinQuery)
+        .addParameter("task_id", this.getId())
+        .executeAndFetch(Integer.class);
+
+      List<Category> categories = new ArrayList<Category>();
+
+      for (Integer categoryId : categoryIds) {
+        String taskQuery = "Select * From categories WHERE id = :categoryId";
+        Category category = con.createQuery(taskQuery)
+          .addParameter("categoryId", categoryId)
+          .executeAndFetchFirst(Category.class);
+        categories.add(category);
+      }
+      return categories;
     }
   }
 }
