@@ -19,8 +19,20 @@
       <option value="$category.getId()"> $category.getName() </option>
     #end
   </select>
-  <button type="submit" class="btn btn-info">Add category to this task</button>
+  <button type="submit" class="btn btn-info" id="category-to-task">Add category to this task</button>
 </form>
+
+<h1>$task.getDescription()</h1>
+
+<p>Edit task:</p>
+
+<form action="/categories/$task.getCategoryId()/tasks/$task.getId()" method="post">
+  <label for="description">Description</label>
+  <input id="description" name="description" type="text">
+  <button type="submit" class="btn btn-info" id="update-task">Update Task</button>
+</form>
+
+<a href="/categories/$category.getId()">Return to $category.getName()</a>
 
 <p><a href="/tasks/$task.getId()/edit">Edit this task</a></p>
 
