@@ -76,14 +76,17 @@ public class App {
 
     post("/add_categories", (request, response) -> {
       Integer taskId = Integer.parseInt(request.queryParams("task_id"));
-
-      //int categoryId = Integer.parseInt(request.queryParams("category_id"));
-      // Category category = Category.find(categoryId);
-      // Task task = Task.find(taskId);
-      // task.addCategory(category);
+      Integer categoryId = Integer.parseInt(request.queryParams("category_id"));
+      Category category = Category.find(categoryId);
+      Task task = Task.find(taskId);
+      task.addCategory(category);
       response.redirect("/tasks/" + taskId);
       return null;
     });
 
   }
 }
+
+// INSERT INTO tasks (description) VALUES ('Epicodus homework') RETURNING id;
+// INSERT INTO tasks (description) VALUES ('cook dinner') RETURNING id;
+// INSERT INTO tasks (description) VALUES ('laundry') RETURNING id;
