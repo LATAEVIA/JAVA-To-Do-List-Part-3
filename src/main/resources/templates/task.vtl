@@ -1,16 +1,15 @@
-<h1>$task.getDescription()</h1>
+<h1>$task.getDescription() <br> $category.getName() <br> $task.getId()</h1>
 
+##Add category to task
 #if($task.getCategories())
   <p>Here are the categories for this task:</p>
   <ul>
     #foreach($category in $task.getCategories())
-      <li>$category.getName()</li>
+      <li><a href="/categories/$category.getId()/tasks/$task.getId()">$category.getName()</a></li>
     #end
   </ul>
 #end
-
 <h4>Add a category to this task:</h4>
-
 <form action='/add_categories' method='post'>
   <input id="task_id" name="task_id" type="hidden" value="$task.getId()">
   <label for="category_id">Select a category</label>
@@ -22,18 +21,38 @@
   <button type="submit" class="btn btn-info" id="category-to-task">Add category to this task</button>
 </form>
 
-<h1>$task.getDescription()</h1>
+ #*<!-- <ul>
+  #foreach ($task in $tasks)
+    <li><a href="/tasks/$task.getId()">$task.getDescription()</a></li>
+  #end
+</ul> -->
 
+##Edit Task
 <p>Edit task:</p>
-
-<form action="/categories/$task.getCategoryId()/tasks/$task.getId()" method="post">
+<form action="/categories/$category.getId()/tasks/$task.getId()" method="post">
   <label for="description">Description</label>
   <input id="description" name="description" type="text">
   <button type="submit" class="btn btn-info" id="update-task">Update Task</button>
 </form>
 
-<a href="/categories/$category.getId()">Return to $category.getName()</a>
+<form action='/categories/$category.getId()/tasks/$task.getId()' method='post'>
+  <input id="task_id" name="task_id" type="hidden" value="$task.getId()">
+  <label for="category_id">Select a category</label>
+  <select id='category_id' name='category_id' type='text'>
+    #foreach($category in $allCategories)
+      <option value="$category.getId()"> $category.getName() </option>
+    #end
+  </select>
 
-<p><a href="/tasks/$task.getId()/edit">Edit this task</a></p>
+  <input id="category_id" name="category_id" type="hidden" value="$category.getId()">
+  <label for="task_id">Select a task</label>
+  <select id='task_id' name='task_id' type='text'>
+    #foreach($task in $allTasks)
+      <option value="$task.getId()"> $task.getName() </option>
+    #end
+  </select>
 
+  <button type="submit" class="btn btn-info" id="edit-task">Edit this Task</button>
+</form>
 <p><a href="/">Home</a></p>
+*#

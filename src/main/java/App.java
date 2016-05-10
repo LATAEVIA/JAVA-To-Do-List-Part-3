@@ -90,7 +90,7 @@ public class App {
       Task task = Task.find(Integer.parseInt(request.params(":id")));
       model.put("category", category);
       model.put("task", task);
-      model.put("template", "templates/task.vtl");
+      model.put("template", "templates/category-task-edit-delete.vtl"); //USE TASKS.VTL FOR ADDING CATEGORY TO TASK
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 

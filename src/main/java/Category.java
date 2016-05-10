@@ -72,9 +72,9 @@ public class Category {
     List<Integer> taskIds = con.createQuery(joinQuery)
       .addParameter("category_id", this.getId())
       .executeAndFetch(Integer.class);
-
+      //We pull the task_ids from the join table wherever the category_id is equal to the Category object we are calling the method on. So for this particular category, all of the task_ids represent the tasks that belong to that category. They are returned as a List object that we casted as List<Integer>.
     List<Task> tasks = new ArrayList<Task>();
-
+    //We need to create an empty List to hold new Task objects.
     for (Integer taskId : taskIds) {
       String taskQuery = "Select * From tasks WHERE id = :taskId";
       Task task = con.createQuery(taskQuery)
@@ -82,7 +82,10 @@ public class Category {
         .executeAndFetchFirst(Task.class);
       tasks.add(task);
     }
+    //We then loop through taskIds. For each id, we create a new query that fetches the task with that id and add it to tasks.
+
     return tasks;
+    //return the arry 'tasks'
   }
 }
 
