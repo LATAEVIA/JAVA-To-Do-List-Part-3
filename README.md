@@ -1,6 +1,6 @@
 # _JAVA To Do List Part 3_
 
-#### _Practice building a Java application with two models and creating both the back-end and front-end of a One-to-Many RESTful database-backed Spark application that is fully tested with both unit tests and integration tests by rebuilding [JAVA-To-Do-List-Part-2] (https://github.com/LATAEVIA/JAVA-To-Do-List-Part-2) using One-to-Many RESTful routing., 05/07/2016_
+#### _Practice building a Java application with two models and creating both the back-end and front-end of a RESTful database-backed Spark application that is fully tested with both unit tests and integration tests by rebuilding [JAVA-To-Do-List-Part-2] (https://github.com/LATAEVIA/JAVA-To-Do-List-Part-2) using One-to-Many RESTful routing., 05/07/2016_
 
 #### By _**LaTaevia**_
 
